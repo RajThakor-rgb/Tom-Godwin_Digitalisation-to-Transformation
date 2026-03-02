@@ -1,2 +1,6 @@
 # Tom-Godwin_Digitalisation-to-Transformation
 Tom Godwin's point of view on Digitalisation to Transformation converted into Game for classrooms to discuss the topic
+1. “Digitize the past rather than invent the future.” - As a CEO or CTO, how would you decide whether to incrementally improve existing legacy systems or restructure entirely to enable AI-driven value creation?
+2. “Companies have just built digital layers on top of legacy systems without changing the core structure of how they operate.” - If you were leading digital transformation, how would you evaluate whether your organization’s AI investments are truly changing core business models—or just automating outdated processes?
+3. “Most businesses think about technology as a tool to make things a bit better, rather than as a way to fundamentally rethink what we do.” - What mental and cultural shifts must leadership teams make to embrace AI as a strategic force for business model innovation, not just operational efficiency?
+4. “The most powerful technology is invisible. It’s embedded into the experience so much that we don’t even see it anymore.” - As AI becomes seamlessly embedded in services (e.g., recommendations, automation), are you viewing AI as a core infrastructure that shapes entire business ecosystems

@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Darwinism — Classroom Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --card: #12121a;
+    --border: #2a2a3a;
+    --accent1: #ff4d6d;
+    --accent2: #7b5ea7;
+    --accent3: #00c9a7;
+    --accent4: #f7b731;
+    --text: #f0f0f5;
+    --muted: #888899;
+    --glow1: rgba(255,77,109,0.15);
+    --glow2: rgba(123,94,167,0.15);
+    --glow3: rgba(0,201,167,0.15);
+    --glow4: rgba(247,183,49,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .screen { display:none; position:relative; z-index:1; }
+  .screen.active { display:flex; flex-direction:column; min-height:100vh; }
+
+  /* ===== HOME SCREEN ===== */
+  #home {
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 40px 20px;
+    gap: 24px;
+  }
+
+  .badge {
+    font-family:'Syne', sans-serif;
+    font-size:11px;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    color: var(--accent3);
+    border:1px solid var(--accent3);
+    padding: 6px 16px;
+    border-radius:2px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+  .main-title {
+    font-family:'Syne', sans-serif;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight:800;
+    line-height:1;
+    background: linear-gradient(135deg, #fff 30%, var(--accent1) 70%, var(--accent2));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    letter-spacing:-2px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size:13px;
+    max-width:500px;
+    line-height:1.8;
+  }
+
+  .tom-quote {
+    font-family:'Syne', sans-serif;
+    font-style:italic;
+    font-size:15px;
+    color: var(--accent4);
+    max-width:520px;
+    border-left: 3px solid var(--accent4);
+    padding-left:16px;
+    text-align:left;
+    line-height:1.6;
+  }
+
+  .team-setup {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius:12px;
+    padding:24px 32px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    max-width:440px;
+    width:100%;
+  }
+
+  .team-setup label {
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  .team-inputs {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .team-input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius:8px;
+    padding:10px 14px;
+    color:var(--text);
+    font-family:'Space Mono', monospace;
+    font-size:13px;
+    outline:none;
+    transition: border-color 0.2s;
+  }
+  .team-input:focus { border-color: var(--accent2); }
+  .team-input::placeholder { color:var(--muted); }
+
+  .btn {
+    font-family:'Syne', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:1px;
+    border:none;
+    border-radius:8px;
+    padding:14px 32px;
+    cursor:pointer;
+    transition: all 0.2s;
+    position:relative;
+    overflow:hidden;
+  }
+  .btn::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:rgba(255,255,255,0.08);
+    opacity:0;
+    transition:opacity 0.2s;
+  }
+  .btn:hover::after { opacity:1; }
+  .btn:active { transform:scale(0.97); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color:#fff;
+    width:100%;
+  }
+
+  .how-it-works {
+    display:flex;
+    gap:16px;
+    max-width:700px;
+    width:100%;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  .how-card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px;
+    flex:1;
+    min-width:140px;
+    max-width:180px;
+    text-align:center;
+  }
+  .how-icon { font-size:24px; margin-bottom:8px; }
+  .how-text { font-size:11px; color:var(--muted); line-height:1.6; }
+  .how-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; margin-bottom:4px; }
+
+  /* ===== GAME SCREEN ===== */
+  #game {
+    padding: 0;
+  }
+
+  .game-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 24px;
+    border-bottom:1px solid var(--border);
+    background:rgba(10,10,15,0.9);
+    backdrop-filter:blur(10px);
+    position:sticky;
+    top:0;
+    z-index:100;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+
+  .game-logo {
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:18px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+
+  .scores-bar {
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+
+  .score-chip {
+    font-size:11px;
+    padding: 4px 12px;
+    border-radius:20px;
+    border:1px solid var(--border);
+    background:var(--card);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition: all 0.3s;
+  }
+  .score-chip.leader { border-color: var(--accent4); box-shadow: 0 0 12px var(--glow4); }
+  .score-chip .chip-name { color:var(--muted); }
+  .score-chip .chip-pts { font-weight:700; font-family:'Syne',sans-serif; }
+
+  .timer-display {
+    font-family:'Syne',sans-serif;
+    font-size:24px;
+    font-weight:800;
+    color:var(--accent3);
+    min-width:60px;
+    text-align:center;
+    transition: color 0.3s;
+  }
+  .timer-display.warning { color:var(--accent1); animation: pulse 0.5s infinite; }
+
+  /* Progress bar */
+  .progress-track {
+    height:4px;
+    background:var(--border);
+    width:100%;
+  }
+  .progress-fill {
+    height:100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent1));
+    transition: width 0.5s ease;
+  }
+
+  /* Question area */
+  .question-area {
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    padding:32px 24px;
+    max-width:900px;
+    margin:0 auto;
+    width:100%;
+    gap:24px;
+  }
+
+  .q-meta {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+
+  .q-number {
+    font-family:'Syne',sans-serif;
+    font-size:11px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  .q-tag {
+    font-size:10px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:3px 10px;
+    border-radius:2px;
+    font-weight:700;
+  }
+
+  .q-type-scenario .q-tag { background:var(--glow2); color:var(--accent2); border:1px solid var(--accent2); }
+  .q-type-poll .q-tag { background:var(--glow3); color:var(--accent3); border:1px solid var(--accent3); }
+  .q-type-rapid .q-tag { background:var(--glow1); color:var(--accent1); border:1px solid var(--accent1); }
+  .q-type-debate .q-tag { background:var(--glow4); color:var(--accent4); border:1px solid var(--accent4); }
+
+  .q-source {
+    font-family:'Syne',sans-serif;
+    font-style:italic;
+    font-size:13px;
+    color:var(--muted);
+    padding:12px 16px;
+    border-left:3px solid;
+    background:var(--card);
+    border-radius:0 8px 8px 0;
+    line-height:1.5;
+  }
+
+  .q-text {
+    font-family:'Syne',sans-serif;
+    font-size:clamp(1.1rem, 3vw, 1.5rem);
+    font-weight:700;
+    line-height:1.4;
+  }
+
+  /* Answer options */
+  .options-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  @media(max-width:600px){ .options-grid{grid-template-columns:1fr;} }
+
+  .option-btn {
+    background:var(--card);
+    border:2px solid var(--border);
+    border-radius:12px;
+    padding:16px 20px;
+    text-align:left;
+    cursor:pointer;
+    font-family:'Space Mono',monospace;
+    font-size:13px;
+    color:var(--text);
+    transition: all 0.2s;
+    position:relative;
+    overflow:hidden;
+    line-height:1.6;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color:var(--accent2);
+    background: var(--glow2);
+    transform:translateY(-2px);
+  }
+  .option-btn .opt-label {
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:18px;
+    color:var(--accent2);
+    display:block;
+    margin-bottom:4px;
+  }
+  .option-btn.correct {
+    border-color:var(--accent3) !important;
+    background:var(--glow3) !important;
+  }
+  .option-btn.wrong {
+    border-color:var(--accent1) !important;
+    background:var(--glow1) !important;
+    opacity:0.6;
+  }
+  .option-btn.selected {
+    border-color:var(--accent4);
+    background:var(--glow4);
+  }
+  .option-btn:disabled { cursor:not-allowed; }
+
+  /* Explanation reveal */
+  .explanation-box {
+    background:var(--card);
+    border:1px solid var(--accent3);
+    border-radius:12px;
+    padding:20px 24px;
+    display:none;
+    animation: slideUp 0.4s ease;
+  }
+  .explanation-box.show { display:block; }
+  @keyframes slideUp {
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+  .exp-title { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; color:var(--accent3); margin-bottom:8px; letter-spacing:2px; text-transform:uppercase; }
+  .exp-text { font-size:12px; color:var(--muted); line-height:1.8; }
+  .exp-example { margin-top:10px; font-size:12px; color:var(--text); border-left:2px solid var(--accent3); padding-left:12px; line-height:1.7; }
+
+  /* Team vote area */
+  .vote-area {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .vote-btn {
+    flex:1;
+    min-width:100px;
+    padding:12px;
+    border-radius:10px;
+    border:2px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    font-family:'Syne',sans-serif;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all 0.2s;
+    text-align:center;
+  }
+  .vote-btn:hover { transform:translateY(-2px); }
+  .vote-btn.voted { opacity:0.5; }
+
+  /* Debate prompt */
+  .debate-prompt {
+    background:linear-gradient(135deg, var(--glow4), transparent);
+    border:1px solid var(--accent4);
+    border-radius:12px;
+    padding:20px 24px;
+  }
+  .debate-sides {
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    gap:16px;
+    align-items:center;
+    margin-top:16px;
+  }
+  .debate-side {
+    background:var(--card);
+    border-radius:10px;
+    padding:14px;
+    font-size:12px;
+    line-height:1.6;
+  }
+  .debate-vs {
+    font-family:'Syne',sans-serif;
+    font-size:20px;
+    font-weight:800;
+    color:var(--accent4);
+    text-align:center;
+  }
+  .debate-label { font-family:'Syne',sans-serif; font-weight:700; font-size:11px; letter-spacing:2px; margin-bottom:6px; }
+
+  /* Navigation */
+  .nav-area {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+
+  .btn-secondary {
+    background:var(--card);
+    border:1px solid var(--border);
+    color:var(--text);
+  }
+  .btn-reveal {
+    background:linear-gradient(135deg,var(--accent3),#00a388);
+    color:#000;
+  }
+  .btn-next {
+    background:linear-gradient(135deg,var(--accent2),var(--accent1));
+    color:#fff;
+    flex:1;
+    max-width:200px;
+  }
+
+  .award-area { display:flex; gap:8px; flex-wrap:wrap; }
+  .award-btn {
+    font-size:11px;
+    padding:8px 14px;
+    border-radius:6px;
+    border:1px solid;
+    background:transparent;
+    cursor:pointer;
+    font-family:'Space Mono',monospace;
+    transition:all 0.2s;
+  }
+  .award-btn:hover { transform:scale(1.05); }
+  .award-btn.a1 { border-color:var(--accent1); color:var(--accent1); }
+  .award-btn.a2 { border-color:var(--accent2); color:var(--accent2); }
+  .award-btn.a3 { border-color:var(--accent3); color:var(--accent3); }
+  .award-btn.a4 { border-color:var(--accent4); color:var(--accent4); }
+  .award-btn.a1:hover { background:var(--glow1); }
+  .award-btn.a2:hover { background:var(--glow2); }
+  .award-btn.a3:hover { background:var(--glow3); }
+  .award-btn.a4:hover { background:var(--glow4); }
+
+  .points-flash {
+    position:fixed;
+    font-family:'Syne',sans-serif;
+    font-size:48px;
+    font-weight:800;
+    pointer-events:none;
+    z-index:9999;
+    animation: pointsAnim 1s forwards;
+    color:var(--accent4);
+    text-shadow: 0 0 30px var(--accent4);
+  }
+  @keyframes pointsAnim {
+    0%{opacity:1;transform:translateY(0) scale(1);}
+    100%{opacity:0;transform:translateY(-80px) scale(1.5);}
+  }
+
+  /* ===== Q&A SCREEN ===== */
+  #qa {
+    padding:32px 24px;
+    align-items:center;
+    justify-content:center;
+    gap:24px;
+  }
+  .qa-title {
+    font-family:'Syne',sans-serif;
+    font-size:clamp(2rem,5vw,3.5rem);
+    font-weight:800;
+    text-align:center;
+    background:linear-gradient(135deg,var(--accent3),var(--accent2));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .qa-cards {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:16px;
+    max-width:800px;
+    width:100%;
+  }
+  .qa-card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .qa-card:hover { border-color:var(--accent2); box-shadow:0 8px 24px var(--glow2); transform:translateY(-3px); }
+  .qa-card-q { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; margin-bottom:8px; }
+  .qa-card-a { font-size:12px; color:var(--muted); line-height:1.7; display:none; }
+  .qa-card.open .qa-card-a { display:block; }
+  .qa-card.open { border-color:var(--accent3); }
+
+  /* ===== RESULTS SCREEN ===== */
+  #results {
+    align-items:center;
+    justify-content:center;
+    padding:40px 24px;
+    gap:24px;
+    text-align:center;
+  }
+  .results-title {
+    font-family:'Syne',sans-serif;
+    font-size:clamp(2rem,5vw,4rem);
+    font-weight:800;
+    background:linear-gradient(135deg,var(--accent4),var(--accent1));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .podium {
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    gap:8px;
+    height:200px;
+    max-width:500px;
+    width:100%;
+  }
+  .podium-item {
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+  }
+  .podium-name { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; }
+  .podium-pts { font-size:11px; color:var(--muted); }
+  .podium-bar {
+    width:100%;
+    border-radius:8px 8px 0 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:24px;
+    transition: height 1s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .pos1 .podium-bar { background:linear-gradient(180deg,var(--accent4),#d4920a); height:140px; }
+  .pos2 .podium-bar { background:linear-gradient(180deg,#ccc,#888); height:100px; }
+  .pos3 .podium-bar { background:linear-gradient(180deg,#cd7f32,#8b5200); height:70px; }
+  .pos4 .podium-bar { background:var(--border); height:50px; }
+
+  .key-takeaways {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:24px;
+    max-width:680px;
+    width:100%;
+    text-align:left;
+  }
+  .kt-title { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--accent3); letter-spacing:2px; text-transform:uppercase; margin-bottom:16px; }
+  .kt-item { display:flex; gap:12px; margin-bottom:12px; font-size:12px; color:var(--muted); line-height:1.7; }
+  .kt-dot { width:6px; height:6px; border-radius:50%; background:var(--accent3); margin-top:5px; flex-shrink:0; }
+
+  /* Confetti */
+  .confetti-container { position:fixed; inset:0; pointer-events:none; z-index:9998; overflow:hidden; }
+  .confetti-piece {
+    position:absolute;
+    width:8px; height:8px;
+    border-radius:2px;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    0%{transform:translateY(-20px) rotate(0deg);opacity:1;}
+    100%{transform:translateY(110vh) rotate(720deg);opacity:0;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== HOME SCREEN ========== -->
+<div id="home" class="screen active">
+  <div class="badge">🎮 Classroom Challenge · University of Law</div>
+  <h1 class="main-title">Digital<br>Darwinism</h1>
+  <p class="subtitle">A live competitive game based on Tom Goodwin's framework for understanding why great companies fail in the digital age.</p>
+  <p class="tom-quote">"The most dangerous place to be is standing still while the world is changing around you."</p>
+
+  <div class="how-it-works">
+    <div class="how-card">
+      <div class="how-icon">⚡</div>
+      <div class="how-title">Fast Rounds</div>
+      <div class="how-text">90 seconds per challenge. Think fast, decide faster.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-icon">🏆</div>
+      <div class="how-title">Team Points</div>
+      <div class="how-text">Earn points for correct answers & great contributions.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-icon">💡</div>
+      <div class="how-title">Learn Deep</div>
+      <div class="how-text">Every question reveals real-world insights after.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-icon">🗣️</div>
+      <div class="how-title">Q&A Live</div>
+      <div class="how-text">End with a structured Q&A session.</div>
+    </div>
+  </div>
+
+  <div class="team-setup">
+    <label>Name your teams (up to 4)</label>
+    <div class="team-inputs">
+      <input class="team-input" id="t1" placeholder="Team Alpha" maxlength="16">
+      <input class="team-input" id="t2" placeholder="Team Beta" maxlength="16">
+      <input class="team-input" id="t3" placeholder="Team Gamma" maxlength="16">
+      <input class="team-input" id="t4" placeholder="Team Delta" maxlength="16">
+    </div>
+    <button class="btn btn-primary" onclick="startGame()">🚀 Launch Game</button>
+  </div>
+</div>
+
+<!-- ========== GAME SCREEN ========== -->
+<div id="game" class="screen">
+  <div class="game-header">
+    <div class="game-logo">⚡ Digital Darwinism</div>
+    <div class="scores-bar" id="scoresBar"></div>
+    <div class="timer-display" id="timer">90</div>
+  </div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="question-area">
+    <div class="q-meta">
+      <div class="q-number" id="qNumber">CHALLENGE 1 / 8</div>
+      <div class="q-tag" id="qTag">SCENARIO</div>
+    </div>
+
+    <div class="q-source" id="qSource" style="border-color:var(--accent2)"></div>
+    <div class="q-text" id="qText"></div>
+
+    <div id="optionsArea"></div>
+
+    <div class="explanation-box" id="explanationBox">
+      <div class="exp-title">📖 The Insight</div>
+      <div class="exp-text" id="expText"></div>
+      <div class="exp-example" id="expExample"></div>
+    </div>
+
+    <div class="nav-area">
+      <div class="award-area" id="awardArea"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;flex:1">
+        <button class="btn btn-secondary btn-reveal" id="revealBtn" onclick="revealAnswer()" style="display:none">💡 Reveal Answer</button>
+        <button class="btn btn-next" id="nextBtn" onclick="nextQuestion()" style="display:none">Next Challenge →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Q&A SCREEN ========== -->
+<div id="qa" class="screen">
+  <div class="qa-title">🙋 Questions & Answers</div>
+  <p style="color:var(--muted);font-size:13px;text-align:center;max-width:500px">Click any card to reveal the answer. Use these to guide class discussion!</p>
+  <div class="qa-cards" id="qaCards"></div>
+  <button class="btn btn-primary" style="max-width:300px" onclick="showResults()">🏆 See Final Results</button>
+</div>
+
+<!-- ========== RESULTS SCREEN ========== -->
+<div id="results" class="screen">
+  <div class="results-title">🏆 Final Rankings</div>
+  <div class="podium" id="podium"></div>
+  <div class="key-takeaways">
+    <div class="kt-title">🧠 Tom Goodwin's Core Lessons</div>
+    <div class="kt-item"><div class="kt-dot"></div><div>Most businesses "digitize the past" — they replicate old processes digitally rather than questioning whether those processes should exist at all.</div></div>
+    <div class="kt-item"><div class="kt-dot"></div><div>A digital layer on a broken foundation is still broken. True transformation requires rethinking the core business model, not just adding an app or portal.</div></div>
+    <div class="kt-item"><div class="kt-dot"></div><div>The mindset shift: technology is not a tool for efficiency — it is a lens through which to completely reimagine customer value creation.</div></div>
+    <div class="kt-item"><div class="kt-dot"></div><div>The most powerful technologies disappear. When AI is truly transformative, users won't think about "using AI" — it's just how things work.</div></div>
+  </div>
+  <button class="btn btn-primary" style="max-width:300px" onclick="location.reload()">🔁 Play Again</button>
+</div>
+
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+// ========== GAME DATA ==========
+const QUESTIONS = [
+  // Q1 — Digitize the past
+  {
+    theme: "Q1",
+    type: "scenario",
+    themeColor: "var(--accent2)",
+    timerSecs: 90,
+    source: '"Digitize the past rather than invent the future." — Tom Goodwin',
+    text: "A bank replaces paper forms with PDF uploads and adds a mobile app to show balances. A rival builds an AI that auto-categorises spending, predicts cash shortfalls, and proactively moves money for you. Which company is truly transforming?",
+    options: [
+      { label:"A", text:"The first bank — it has modernised the interface and reduced paper costs.", correct:false },
+      { label:"B", text:"The second bank — it reinvented what a bank does for the customer.", correct:true },
+      { label:"C", text:"Both equally — any digital investment counts as transformation.", correct:false },
+      { label:"D", text:"Neither — transformation only happens if the core is cloud-native.", correct:false },
+    ],
+    explanation:"Tom Goodwin's point is that digitising existing processes is NOT transformation. The first bank made old processes digital. The second bank asked 'what should a bank actually DO for customers?' and rebuilt the answer from scratch.",
+    example:"Real world: Traditional insurance companies built portals to upload claim photos. Lemonade rebuilt insurance as a behavioural AI model that pays claims in 3 minutes. Same industry. Completely different logic."
+  },
+  {
+    theme: "Q1",
+    type: "debate",
+    themeColor: "var(--accent4)",
+    timerSecs: 90,
+    source: 'CEO Decision Point: Legacy vs. Rebuild',
+    text: "Your company spent £50M building a core banking system 10 years ago. The board wants to add AI features on top. You believe the core needs replacing. Debate: incremental improvement OR total rebuild?",
+    options: null,
+    debateSides: {
+      left: { label:"INCREMENTAL", color:"var(--accent2)", text:"Lower risk. Business continuity. Proven system. AI APIs can add smart features without ripping out what works." },
+      right: { label:"TOTAL REBUILD", color:"var(--accent1)", text:"Technical debt compounds. AI on bad foundations produces bad AI. Start fresh to unlock real value." }
+    },
+    explanation:"There's no single right answer — but Goodwin warns that 'good enough' legacy systems often trap companies in outdated logic. The question is: what's more expensive, rebuilding now or failing to compete later?",
+    example:"Kodak's 'incremental improvement' to film was excellent. It just didn't matter when the fundamental product became irrelevant. Sometimes the architecture of the old model is the constraint."
+  },
+
+  // Q2 — Digital layers
+  {
+    theme: "Q2",
+    type: "poll",
+    themeColor: "var(--accent3)",
+    timerSecs: 60,
+    source: '"Companies have built digital layers on top of legacy systems without changing how they operate." — Tom Goodwin',
+    text: "Which of these examples represents GENUINE transformation of a core business model — not just a digital layer on top?",
+    options: [
+      { label:"A", text:"A retailer adds a loyalty app that mirrors its in-store points card.", correct:false },
+      { label:"B", text:"A hotel chain launches a website version of its paper booking form.", correct:false },
+      { label:"C", text:"A taxi company creates an app but keeps the same dispatch and pricing model.", correct:false },
+      { label:"D", text:"A hotel company eliminates rooms it owns — and instead connects travellers to a global supply of homes (Airbnb).", correct:true },
+    ],
+    explanation:"Options A, B, and C digitise an existing process. Option D challenges the fundamental assumption of what a hotel company needs to own and operate. That's the core business model changing — not just the interface.",
+    example:"Airbnb didn't build a better hotel. They asked: 'Why does a hospitality company need to own any property at all?' The digital layer alone never creates this kind of disruption — only a rethought core business logic does."
+  },
+  {
+    theme: "Q2",
+    type: "rapid",
+    themeColor: "var(--accent1)",
+    timerSecs: 45,
+    source: 'Real-World Evaluation Challenge',
+    text: "You're the Chief Transformation Officer. Your AI team automated the expense reimbursement process — it now takes 2 hours instead of 2 weeks. Is this a CORE transformation or a digital layer?",
+    options: [
+      { label:"A", text:"Core transformation — 2 weeks to 2 hours is massive efficiency gain.", correct:false },
+      { label:"B", text:"Digital layer — it's automating a process that could be questioned entirely.", correct:true },
+      { label:"C", text:"Both — efficiency AND transformation together.", correct:false },
+      { label:"D", text:"Cannot tell without more data.", correct:false },
+    ],
+    explanation:"Speed improvement is valuable — but Tom Goodwin would ask: 'Should expense reimbursement even exist in this form?' Companies like Pleo or Brex eliminated the process entirely with real-time corporate cards and automated accounting. The real transformation is eliminating the workflow.",
+    example:"The question to ask: 'Are we making an outdated process faster, or are we questioning if this process should exist at all?' These are very different strategic conversations."
+  },
+
+  // Q3 — Technology as strategic force
+  {
+    theme: "Q3",
+    type: "scenario",
+    themeColor: "var(--accent2)",
+    timerSecs: 90,
+    source: '"Most businesses use technology to make things a bit better, rather than to fundamentally rethink what we do." — Tom Goodwin',
+    text: "A leadership team hires a Chief AI Officer and sets a goal: 15% efficiency improvement across all departments within 12 months. According to Tom Goodwin's framework, what's the biggest risk with this approach?",
+    options: [
+      { label:"A", text:"15% is too ambitious — they should aim for 5% to be realistic.", correct:false },
+      { label:"B", text:"AI cannot improve efficiency without cloud infrastructure first.", correct:false },
+      { label:"C", text:"They are framing AI as an efficiency tool rather than a business model innovation engine.", correct:true },
+      { label:"D", text:"The Chief AI Officer role should report to IT, not the C-suite.", correct:false },
+    ],
+    explanation:"Goodwin's core argument: when leadership defines AI's value as 'efficiency %', they are cementing AI into the 'tool' mindset. The question is never 'how can AI make what we do cheaper?' but 'what should we be doing that we couldn't do before?'",
+    example:"Netflix didn't use technology to make video rental stores 15% more efficient. They asked: what does entertainment distribution look like when physical media is no longer a constraint? That's strategic AI thinking."
+  },
+  {
+    theme: "Q3",
+    type: "debate",
+    themeColor: "var(--accent4)",
+    timerSecs: 90,
+    source: 'Mental & Cultural Shift Required',
+    text: "What SINGLE mental shift matters most for leadership teams to treat AI as a strategic force rather than an operational tool? Discuss as a group, then vote!",
+    options: [
+      { label:"A", text:"Move from 'How do we automate this task?' to 'What new value can we create that was impossible before?'", correct:true },
+      { label:"B", text:"Move from annual technology budgets to continuous investment models.", correct:false },
+      { label:"C", text:"Move from IT-led AI projects to business-unit-led experiments.", correct:false },
+      { label:"D", text:"Move from measuring AI ROI in cost savings to measuring in new revenue streams.", correct:false },
+    ],
+    explanation:"All of these represent important cultural shifts! But Goodwin's primary argument centres on the QUESTION we ask. If the starting question is about automation and efficiency, you'll never get to business model innovation. The mindset shift is fundamentally about what question leadership leads with.",
+    example:"Amazon's leadership principle is 'Start from the customer and work backwards.' They ask what should exist for the customer, not what they can optimise in current operations. That's the mindset Goodwin is pointing to."
+  },
+
+  // Q4 — Invisible technology
+  {
+    theme: "Q4",
+    type: "poll",
+    themeColor: "var(--accent3)",
+    timerSecs: 60,
+    source: '"The most powerful technology is invisible — embedded into the experience so much that we don\'t even see it anymore." — Tom Goodwin',
+    text: "Which of these is the BEST example of technology becoming 'invisible' in Tom Goodwin's sense?",
+    options: [
+      { label:"A", text:"A chatbot interface where users know they're talking to AI and type commands.", correct:false },
+      { label:"B", text:"Spotify's 'Discover Weekly' — a personalised playlist that appears without you thinking about how it's made.", correct:true },
+      { label:"C", text:"A dashboard showing 12 AI-powered analytics modules for managers to review.", correct:false },
+      { label:"D", text:"An AI assistant that announces 'I am processing your request using machine learning.'", correct:false },
+    ],
+    explanation:"Invisible AI = AI that delivers value without making users think about the AI. Spotify's Discover Weekly is powerful because users think 'this playlist is perfect' — not 'the collaborative filtering algorithm matched my taste vectors.' The experience is the product. The technology disappears.",
+    example:"Option A, C, and D make users aware they're using AI — which creates friction and makes AI a 'feature.' Discover Weekly, Google Maps' real-time routing, or Amazon's 'Customers Also Bought' make AI the fabric of the experience, not a feature you toggle."
+  },
+  {
+    theme: "Q4",
+    type: "rapid",
+    themeColor: "var(--accent1)",
+    timerSecs: 45,
+    source: 'Strategic Implication Round',
+    text: "If the most powerful AI is invisible, what does this mean for how companies should measure their AI strategy's success?",
+    options: [
+      { label:"A", text:"Track number of AI features shipped per quarter.", correct:false },
+      { label:"B", text:"Measure customer effort reduction and seamlessness of experience.", correct:true },
+      { label:"C", text:"Count how many staff are aware they work alongside AI tools daily.", correct:false },
+      { label:"D", text:"Report the percentage of processes that have an AI label applied.", correct:false },
+    ],
+    explanation:"If invisible AI is the goal, then metrics about 'AI features' and 'AI labels' are backwards. The measure of great AI is that customers accomplish what they need effortlessly — and never have to think about how. Customer effort scores and NPS changes are better proxies than AI feature counts.",
+    example:"Amazon Go stores: no cashiers, no checkouts, just walk out with your items. Success isn't measured by 'AI transactions processed.' It's measured by: time in store, items per visit, customer return rate. The AI disappears — the experience is the metric."
+  },
+];
+
+const QA_DATA = [
+  { q:"What does Tom Goodwin mean by 'digitising the past'?", a:"He means companies take their existing, often outdated, processes and simply make them digital — without questioning whether those processes should exist or what they should look like if designed from scratch today. Example: scanning paper forms vs. eliminating forms entirely." },
+  { q:"How do you tell if an AI investment is truly transformative vs. just a digital layer?", a:"Ask two questions: (1) Does this change what the business does for customers, or just how it does the same thing? (2) Does this open up value that was impossible before? If both answers are no, it's likely a digital layer, not transformation." },
+  { q:"What mental shift is required to use AI strategically?", a:"Leadership must shift from 'How do we automate what we already do?' to 'What should we be doing that was previously impossible?' This moves AI from an efficiency tool to a business model innovation engine." },
+  { q:"Why is 'invisible' technology the most powerful?", a:"When technology disappears into the experience, users don't have to think about using it — they just get the outcome they want. This creates seamless value delivery. If users are aware of the AI, it's still a feature. When they're not, it's infrastructure." },
+  { q:"Can a company transform incrementally, or must it be a complete rebuild?", a:"Goodwin doesn't say all legacy must be abandoned — but he warns that incremental improvement on a fundamentally flawed foundation often just compounds technical debt. The real question is whether the core business logic is being questioned, not just the interfaces." },
+  { q:"What does good AI leadership look like according to this framework?", a:"Good AI leadership starts from the customer outcome and works backwards. It asks 'what should exist?' before 'how do we build it?' It measures success in customer value created, not AI features deployed." },
+];
+
+// ========== GAME STATE ==========
+let teams = [];
+let scores = [];
+let currentQ = 0;
+let timerInterval = null;
+let timerLeft = 90;
+
+function startGame() {
+  const names = [
+    document.getElementById('t1').value.trim() || 'Team Alpha',
+    document.getElementById('t2').value.trim() || 'Team Beta',
+    document.getElementById('t3').value.trim() || 'Team Gamma',
+    document.getElementById('t4').value.trim() || 'Team Delta',
+  ];
+  teams = names;
+  scores = [0, 0, 0, 0];
+  currentQ = 0;
+  showScreen('game');
+  renderScores();
+  loadQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderScores() {
+  const bar = document.getElementById('scoresBar');
+  const maxScore = Math.max(...scores, 1);
+  bar.innerHTML = teams.map((t,i) => `
+    <div class="score-chip ${scores[i]===maxScore && scores[i]>0?'leader':''}">
+      <span class="chip-name">${t}</span>
+      <span class="chip-pts" style="color:${['var(--accent1)','var(--accent2)','var(--accent3)','var(--accent4)'][i]}">${scores[i]}pts</span>
+    </div>
+  `).join('');
+}
+
+const COLORS = ['var(--accent1)','var(--accent2)','var(--accent3)','var(--accent4)'];
+
+function loadQuestion() {
+  if(currentQ >= QUESTIONS.length) { showQA(); return; }
+  const q = QUESTIONS[currentQ];
+  
+  // Progress
+  document.getElementById('progressFill').style.width = ((currentQ/QUESTIONS.length)*100)+'%';
+  document.getElementById('qNumber').textContent = `CHALLENGE ${currentQ+1} / ${QUESTIONS.length}`;
+
+  // Theme tag
+  const tagEl = document.getElementById('qTag');
+  const typeLabels = { scenario:'SCENARIO', poll:'CLASS POLL', rapid:'⚡ RAPID FIRE', debate:'🗣️ DEBATE' };
+  tagEl.textContent = typeLabels[q.type] || q.type.toUpperCase();
+  const qArea = document.querySelector('.question-area');
+  qArea.className = `question-area q-type-${q.type}`;
+
+  // Source and question
+  document.getElementById('qSource').textContent = q.source;
+  document.getElementById('qSource').style.borderColor = q.themeColor;
+  document.getElementById('qText').textContent = q.text;
+
+  // Hide explanation
+  document.getElementById('explanationBox').classList.remove('show');
+  document.getElementById('expText').textContent = q.explanation;
+  document.getElementById('expExample').textContent = q.example || '';
+
+  // Options
+  const area = document.getElementById('optionsArea');
+  if(q.type === 'debate' && q.debateSides) {
+    area.innerHTML = `
+      <div class="debate-prompt">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--accent4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">TEAM DEBATE — 90 SECONDS</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:0">Assign teams to each side, argue your case, then vote below.</div>
+        <div class="debate-sides">
+          <div class="debate-side" style="border:1px solid ${q.debateSides.left.color}">
+            <div class="debate-label" style="color:${q.debateSides.left.color}">${q.debateSides.left.label}</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.7">${q.debateSides.left.text}</div>
+          </div>
+          <div class="debate-vs">VS</div>
+          <div class="debate-side" style="border:1px solid ${q.debateSides.right.color}">
+            <div class="debate-label" style="color:${q.debateSides.right.color}">${q.debateSides.right.label}</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.7">${q.debateSides.right.text}</div>
+          </div>
+        </div>
+      </div>`;
+  } else if(q.options) {
+    area.innerHTML = `<div class="options-grid">${q.options.map((o,i)=>`
+      <button class="option-btn" onclick="selectOption(${i})" id="opt${i}">
+        <span class="opt-label">${o.label}</span>
+        ${o.text}
+      </button>`).join('')}</div>`;
+  }
+
+  // Reveal/Next buttons
+  document.getElementById('revealBtn').style.display = 'inline-block';
+  document.getElementById('nextBtn').style.display = 'none';
+
+  // Award buttons
+  renderAwardBtns();
+
+  // Timer
+  startTimer(q.timerSecs);
+}
+
+function renderAwardBtns() {
+  const area = document.getElementById('awardArea');
+  area.innerHTML = `<div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;align-self:center;margin-right:4px">+1pt:</div>` +
+    teams.map((t,i) => `<button class="award-btn a${i+1}" onclick="awardPts(${i},event)">${t}</button>`).join('');
+}
+
+function awardPts(idx, e) {
+  scores[idx] += 1;
+  renderScores();
+  flashPoints(e, '+1');
+}
+
+function flashPoints(e, txt) {
+  const el = document.createElement('div');
+  el.className = 'points-flash';
+  el.textContent = txt;
+  el.style.left = (e.clientX - 20)+'px';
+  el.style.top = (e.clientY - 20)+'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+function selectOption(idx) {
+  const q = QUESTIONS[currentQ];
+  if(!q.options) return;
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+  btns[idx].classList.add('selected');
+}
+
+function revealAnswer() {
+  const q = QUESTIONS[currentQ];
+  stopTimer();
+  document.getElementById('explanationBox').classList.add('show');
+  document.getElementById('revealBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'inline-block';
+
+  if(q.options) {
+    const btns = document.querySelectorAll('.option-btn');
+    btns.forEach((b,i) => {
+      b.disabled = true;
+      if(q.options[i].correct) b.classList.add('correct');
+      else if(b.classList.contains('selected')) b.classList.add('wrong');
+    });
+  }
+}
+
+function nextQuestion() {
+  currentQ++;
+  loadQuestion();
+}
+
+// Timer
+function startTimer(secs) {
+  stopTimer();
+  timerLeft = secs;
+  const el = document.getElementById('timer');
+  el.textContent = timerLeft;
+  el.classList.remove('warning');
+  timerInterval = setInterval(() => {
+    timerLeft--;
+    el.textContent = timerLeft;
+    if(timerLeft <= 15) el.classList.add('warning');
+    if(timerLeft <= 0) { stopTimer(); revealAnswer(); }
+  }, 1000);
+}
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+// Q&A Screen
+function showQA() {
+  showScreen('qa');
+  stopTimer();
+  const container = document.getElementById('qaCards');
+  container.innerHTML = QA_DATA.map((item,i) => `
+    <div class="qa-card" onclick="toggleQA(this)">
+      <div class="qa-card-q">Q${i+1}: ${item.q}</div>
+      <div class="qa-card-a">${item.a}</div>
+    </div>
+  `).join('');
+}
+function toggleQA(el) { el.classList.toggle('open'); }
+
+// Results
+function showResults() {
+  showScreen('results');
+  launchConfetti();
+
+  const sorted = teams.map((t,i) => ({name:t, score:scores[i], idx:i}))
+    .sort((a,b) => b.score - a.score);
+  const maxScore = Math.max(sorted[0].score, 1);
+
+  const medals = ['🥇','🥈','🥉','🎖️'];
+  const podium = document.getElementById('podium');
+  const reorder = [sorted[1], sorted[0], sorted[2], sorted[3]].filter(Boolean);
+  const posClass = ['pos2','pos1','pos3','pos4'];
+
+  podium.innerHTML = reorder.map((t,i) => `
+    <div class="podium-item ${posClass[i]}">
+      <div style="font-size:20px">${medals[sorted.indexOf(t)]}</div>
+      <div class="podium-name">${t.name}</div>
+      <div class="podium-pts">${t.score} pts</div>
+      <div class="podium-bar">${medals[sorted.indexOf(t)]}</div>
+    </div>
+  `).join('');
+}
+
+function launchConfetti() {
+  const colors = ['#ff4d6d','#7b5ea7','#00c9a7','#f7b731','#fff'];
+  const container = document.getElementById('confettiContainer');
+  for(let i=0; i<80; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random()*100+'vw';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.width = el.style.height = (6+Math.random()*8)+'px';
+    el.style.animationDuration = (2+Math.random()*3)+'s';
+    el.style.animationDelay = (Math.random()*2)+'s';
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 5500);
+  }
+}
+</script>
+</body>
+</html>
